@@ -66,6 +66,7 @@ if opt.doSystematics:
   theoryFactoryType = {}
   mask = (~data['cat'].str.contains("NOTAG"))&(data['type']=='sig')
   for s in experimental_systematics:
+    print(s)
     if s['type'] == 'factory': 
       # Fix for HEM as only in 2018 workspaces
       if s['name'] == 'JetHEM': experimentalFactoryType[s['name']] = "a_h"
@@ -79,6 +80,7 @@ if opt.doSystematics:
   print " --> Adding experimental systematics variations to dataFrame"
   # Add constant systematics to dataFrame
   for s in experimental_systematics:
+    print(s)
     if s['type'] == 'constant': data = addConstantSyst(data,s,opt)
   data = experimentalSystFactory(data, experimental_systematics, experimentalFactoryType, opt )
 

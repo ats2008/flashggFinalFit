@@ -4,6 +4,7 @@ from collections import OrderedDict as od
 # Add analyses to globalReplacementMap. See "STXS" as an example
 globalReplacementMap = od()
 
+
 # Example analysis which with cats Untagged_Tag0,VBF_Tag0
 globalReplacementMap['example'] = od()
 # For WRONG VERTEX SCENARIO:
@@ -22,6 +23,32 @@ globalReplacementMap["example"]["procRVMap"]["VBF_Tag0"] = "VBF"
 globalReplacementMap["example"]["catRVMap"] = od()
 globalReplacementMap["example"]["catRVMap"]["Untagged_Tag0"] = "Untagged_Tag0"
 globalReplacementMap["example"]["catRVMap"]["VBF_Tag0"] = "VBF_Tag0"
+
+# HHH Analysis 
+globalReplacementMap['trippleH'] = od()
+# For WRONG VERTEX SCENARIO:
+#  * single proc x cat for wrong vertex since for dZ > 1cm shape independent of proc x cat
+#  * use proc x cat with highest number of WV events
+globalReplacementMap['trippleH']['procWV'] = "ggHHH"
+globalReplacementMap['trippleH']['catWV']  = "cat0"
+# For RIGHT VERTEX SCENARIO:
+#  * default you should add is diagonal process from given category 
+#  * if few events in diagonal process then may need to change the category aswell (see catRVMap)
+#  * map must contain entry for all cats being processed (for replacement proc and cat)
+globalReplacementMap['trippleH']['procRVMap'] = od()
+#globalReplacementMap["trippleH"]["procRVMap"]["doubleH"] = "doubleH"
+#globalReplacementMap["trippleH"]["procRVMap"]["singleH"] = "doubleH"
+globalReplacementMap["trippleH"]["procRVMap"]["ggHHH"]   = "ggHHH"
+# Replacement category for RV fit
+globalReplacementMap["trippleH"]["catRVMap"] = od()
+globalReplacementMap["trippleH"]["catRVMap"]["cat0"] = "cat0"
+globalReplacementMap["trippleH"]["catRVMap"]["cat1"] = "cat0"
+globalReplacementMap["trippleH"]["catRVMap"]["cat2"] = "cat0"
+globalReplacementMap["trippleH"]["catRVMap"]["cat3"] = "cat0"
+globalReplacementMap["trippleH"]["catRVMap"]["cat4"] = "cat0"
+globalReplacementMap["trippleH"]["catRVMap"]["cat5"] = "cat0"
+globalReplacementMap["trippleH"]["catRVMap"]["catX"] = "cat0"
+
 
 
 # STXS analysis

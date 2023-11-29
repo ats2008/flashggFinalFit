@@ -97,6 +97,9 @@ for year in years:
     else: _cat = "%s_%s"%(opt.cat,year)
 
     # Input flashgg ws 
+    #print("%s/*%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc))
+    #_inputWSFile = glob.glob("%s/*%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc))[0]
+    print( "%s/*M%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc) )
     _inputWSFile = glob.glob("%s/*M%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc))[0]
     _nominalDataName = "%s_%s_%s_%s"%(_proc_s0,opt.mass,sqrts__,opt.cat)
 
@@ -171,6 +174,7 @@ if not opt.skipCOWCorr: data['nominal_yield_COWCorr'] = '-'
 
 # Add columns in dataFrame for systematic yield variations
 if opt.doSystematics:
+  print "Adding yields for systematics  "
   # Extract type of systematic using factoryType function (defined in tools.calcSystematics)
   #  * a_h: anti-symmetric RooDataHist (2 columns in dataframe)
   #  * a_w: anti-symmetric weight in nominal RooDataSet (2 columns in dataframe)
@@ -179,16 +183,20 @@ if opt.doSystematics:
   theoryFactoryType = {}
   # No experimental systematics for NOTAG
   if opt.cat != "NOTAG":
-    for s in experimental_systematics: 
+    for s in experimental_systematics:  
+      print(s)
       if s['type'] == 'factory': 
 	# Fix for HEM as only in 2018 workspaces
 	if s['name'] == 'JetHEM': experimentalFactoryType[s['name']] = "a_h"
 	else: experimentalFactoryType[s['name']] = factoryType(data,s)
-	if experimentalFactoryType[s['name']] in ["a_w","a_h"]:
+	
+    if experimentalFactoryType[s['name']] in ["a_w","a_h"]:
 	  data['%s_up_yield'%s['name']] = '-'
 	  data['%s_down_yield'%s['name']] = '-'
-	else: data['%s_yield'%s['name']] = '-'
+    else: data['%s_yield'%s['name']] = '-'
+  print("Exp Syst. : ",experimentalFactoryType)
   for s in theory_systematics: 
+    print(s)
     if s['type'] == 'factory': 
       theoryFactoryType[s['name']] = factoryType(data,s)
       if theoryFactoryType[s['name']] in ["a_w","a_h"]:
@@ -243,19 +251,19 @@ for ir,r in data[data['type']=='sig'].iterrows():
       for s,f in experimentalFactoryType.iteritems():
 	if f in ['a_w','a_h']: 
 	  for direction in ['up','down']: 
-	    data.at[ir,"%s_%s_yield"%(s,direction)] = experimentalSystYields["%s_%s"%(s,direction)]
+	    data.at[ir,"%s_%s_yield"%(s,direction)] = experimentalSystYields["%s_%s"%(s,direction)] ;  print "EXP YIELD : %s_%s_yield : %s "%(s,direction, experimentalSystYields["%s_%s"%(s,direction)])
 	else:
-	  data.at[ir,"%s_yield"%s] = experimentalSystYields[s]
+	  data.at[ir,"%s_yield"%s] = experimentalSystYields[s] ;  print "%s_%s_yield"%(s,direction)
 
     # For theoretical systematics:
     theorySystYields = calcSystYields(r['nominalDataName'],contents,inputWS,theoryFactoryType,skipCOWCorr=opt.skipCOWCorr,proc=r['proc'],year=r['year'],ignoreWarnings=opt.ignore_warnings)
     for s,f in theoryFactoryType.iteritems():
       if f in ['a_w','a_h']: 
 	for direction in ['up','down']: 
-	  data.at[ir,"%s_%s_yield"%(s,direction)] = theorySystYields["%s_%s"%(s,direction)]
+	  data.at[ir,"%s_%s_yield"%(s,direction)] = theorySystYields["%s_%s"%(s,direction)] ;   print "%s_%s_yield : %s"%(s,direction,theorySystYields["%s_%s"%(s,direction)] )
 	  if not opt.skipCOWCorr: data.at[ir,"%s_%s_yield_COWCorr"%(s,direction)] = theorySystYields["%s_%s_COWCorr"%(s,direction)]
       else:
-	data.at[ir,"%s_yield"%s] = theorySystYields[s]
+	data.at[ir,"%s_yield"%s] = theorySystYields[s] ;   print "%s_%s_yield : %s"%(s,direction, theorySystYields[s])
 	if not opt.skipCOWCorr: data.at[ir,"%s_yield_COWCorr"%s] = theorySystYields["%s_COWCorr"%s]
 
   # Remove the workspace and file from heap

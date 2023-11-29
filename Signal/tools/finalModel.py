@@ -140,11 +140,18 @@ class FinalModel:
     fp = self.xsbrMap[self.proc]['factor'] if 'factor' in self.xsbrMap[self.proc] else 1.
     mp = self.xsbrMap[self.proc]['mode']
     xs = fp*self.XSBR[mp]
+    print "in buildXSBRSplines !"
+    print "\t f prod. (fp)  : ",fp
+    print "\t mode production. ",mp
+    print "\t xs : fp*self.XSBR[mp] = ",xs
     self.Splines['xs'] = ROOT.RooSpline1D("fxs_%s_%s"%(self.proc,self.sqrts),"fxs_%s_%s"%(self.proc,self.sqrts),self.MH,len(mh),mh,xs)
     # BR
     fd = self.xsbrMap['decay']['factor'] if 'factor' in self.xsbrMap['decay'] else 1.
     md = self.xsbrMap['decay']['mode']
     br = fd*self.XSBR[md]
+    print "decay mode k factor [fd]: ",fd
+    print "decay mode: ",md
+    print "decay br : ",br
     self.Splines['br'] = ROOT.RooSpline1D("fbr_%s"%self.sqrts,"fbr_%s"%self.sqrts,self.MH,len(mh),mh,br)
 
   def buildEffAccSpline(self):
@@ -164,6 +171,7 @@ class FinalModel:
         sumw = self.datasets[mp].sumEntries()
         self.MH.setVal(float(mp))
         xs,br = self.Splines['xs'].getVal(), self.Splines['br'].getVal()
+        print 'for MH =  ',self.MH.getVal(),' | xs (MH ), br (MH) : ',xs,br, " sumWeights : ",sumw, " Lumi Scale Factor  : ",lumiScaleFactor , " Eff. x Accp = Sum_Wei / exp_theory " , sumw/(lumiScaleFactor*xs*br)
         ea.append(sumw/(lumiScaleFactor*xs*br)) 
     # If single mass point then add MHLow and MHHigh dummy points for constant ea
     if len(ea) == 1: ea, mh = [ea[0],ea[0],ea[0]], [float(self.MHLow),mh[0],float(self.MHHigh)]

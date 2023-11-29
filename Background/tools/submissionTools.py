@@ -21,6 +21,7 @@ def writePreamble(_file):
 def writeCondorSub(_file,_exec,_queue,_nJobs,_jobOpts,doHoldOnFailure=True,doPeriodicRetry=True):
   _file.write("executable = %s.sh\n"%_exec)
   _file.write("arguments  = $(ProcId)\n")
+  _file.write("log        = %s.$(ClusterId).$(ProcId).log\n"%_exec)
   _file.write("output     = %s.$(ClusterId).$(ProcId).out\n"%_exec)
   _file.write("error      = %s.$(ClusterId).$(ProcId).err\n\n"%_exec)
   if _jobOpts != '':
@@ -33,7 +34,7 @@ def writeCondorSub(_file,_exec,_queue,_nJobs,_jobOpts,doHoldOnFailure=True,doPer
   if doPeriodicRetry:
     _file.write("# Periodically retry the jobs every 10 minutes, up to a maximum of 5 retries.\n")
     _file.write("periodic_release =  (NumJobStarts < 3) && ((CurrentTime - EnteredCurrentStatus) > 600)\n\n")
-  _file.write("+JobFlavour = \"%s\"\n"%_queue)
+ # _file.write("+JobFlavour = \"%s\"\n"%_queue)
   _file.write("queue %g"%_nJobs)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -15,8 +15,10 @@ def get_options():
   parser.add_option('--inputTreeFile',dest='inputTreeFile', default="./output_0.root", help='Input tree file')
   parser.add_option('--inputMass',dest='inputMass', default="125", help='Input mass')
   parser.add_option('--productionMode',dest='productionMode', default="ggh", help='Production mode [ggh,vbf,wh,zh,tth,thq,ggzh,bbh]')
+  parser.add_option('--treeNameProc',dest='treeNameProc', default=None, help='name in tree')
   parser.add_option('--year',dest='year', default="2016", help='Year')
   parser.add_option('--decayExt',dest='decayExt', default='', help='Decay extension')
+  parser.add_option('--isRECO',dest='isRECO', default=False, action="store_true", help='tags that source of the file was RECO ')
   parser.add_option('--doNOTAG',dest='doNOTAG', default=False, action="store_true", help='Add NOTAG dataset to output WS')
   parser.add_option('--doNNLOPS',dest='doNNLOPS', default=False, action="store_true", help='Add NNLOPS weight variable: NNLOPSweight')
   parser.add_option('--doSystematics',dest='doSystematics', default=False, action="store_true", help='Add systematics datasets to output WS')
@@ -108,7 +110,9 @@ theoryWeightColumns = {}
 for ts, nWeights in theoryWeightContainers.iteritems(): theoryWeightColumns[ts] = ["%s_%g"%(ts[:-1],i) for i in range(0,nWeights)] # drop final s from container name
 
 # If year == 2018, add HET
-if opt.year == '2018': systematics.append("JetHEM")
+if opt.year == '2018': 
+    print "Adding JetHEM to syst"
+    systematics.append("JetHEM")
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,8 +147,12 @@ if opt.doSystematics: sdata = pandas.DataFrame()
 # Loop over categories: fill dataframe
 for cat in cats:
   print " --> Extracting events from category: %s"%cat
-  if inputTreeDir == '': treeName = "%s_%s_%s_%s"%(opt.productionMode,opt.inputMass,sqrts__,cat)
-  else: treeName = "%s/%s_%s_%s_%s"%(inputTreeDir,opt.productionMode,opt.inputMass,sqrts__,cat)
+  treeNameProc=opt.productionMode
+  if opt.treeNameProc:
+    treeNameProc=opt.treeNameProc
+  if inputTreeDir == '': treeName = "%s_%s_%s_%s"%(treeNameProc,opt.inputMass,sqrts__,cat)
+  else: treeName = "%s/%s_%s_%s_%s"%(inputTreeDir,treeNameProc,opt.inputMass,sqrts__,cat)
+
   print "    * tree: %s"%treeName
   # Extract tree from uproot
   t = f[treeName]
@@ -209,7 +217,10 @@ for cat in cats:
       for direction in ['Up','Down']:
         streeName = "%s_%s%s01sigma"%(treeName,s,direction)
         # If year in streeName then replace by year being processed
-        streeName = re.sub("YEAR",opt.year,streeName)
+        if opt.isRECO:
+            streeName = re.sub("YYEAR",opt.year,streeName)
+        else :
+            streeName = re.sub("YEAR",opt.year,streeName)
         st = f[streeName]
         if len(st)==0: continue
         sdf = st.pandas.df(systematicsVars)

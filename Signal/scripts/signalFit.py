@@ -89,7 +89,7 @@ if opt.analysis not in globalXSBRMap:
 else: xsbrMap = globalXSBRMap[opt.analysis]
 
 # Load RooRealVars
-nominalWSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,MHNominal,opt.proc))[0]
+nominalWSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,MHNominal,opt.proc))[0]
 f0 = ROOT.TFile(nominalWSFileName,"read")
 inputWS0 = f0.Get(inputWSName__)
 xvar = inputWS0.var(opt.xvar)
@@ -151,7 +151,7 @@ nominalDatasets = od()
 # For RV (or if skipping vertex scenario split)
 datasetRVForFit = od()
 for mp in opt.massPoints.split(","):
-  WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procRVFit))[0]
+  WSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,mp,procRVFit))[0]
   f = ROOT.TFile(WSFileName,"read")
   inputWS = f.Get(inputWSName__)
   d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,sqrts__,catRVFit)),aset)
@@ -166,7 +166,7 @@ if( datasetRVForFit[MHNominal].numEntries() < opt.replacementThreshold  )|( data
   nominal_numEntries = datasetRVForFit[MHNominal].numEntries()
   procReplacementFit, catReplacementFit = rMap['procRVMap'][opt.cat], rMap['catRVMap'][opt.cat]
   for mp in opt.massPoints.split(","):
-    WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
+    WSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
     f = ROOT.TFile(WSFileName,"read")
     inputWS = f.Get(inputWSName__)
     d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
@@ -205,7 +205,7 @@ else:
 if not opt.skipVertexScenarioSplit:
   datasetWVForFit = od()
   for mp in opt.massPoints.split(","):
-    WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procWVFit))[0]
+    WSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,mp,procWVFit))[0]
     f = ROOT.TFile(WSFileName,"read")
     inputWS = f.Get(inputWSName__)
     d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procWVFit.split("_")[0]),mp,sqrts__,catWVFit)),aset)
@@ -218,7 +218,8 @@ if not opt.skipVertexScenarioSplit:
     nominal_numEntries = datasetWVForFit[MHNominal].numEntries()
     procReplacementFit, catReplacementFit = rMap['procWV'], rMap['catWV']
     for mp in opt.massPoints.split(","):
-      WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
+      print(mp, " : ","%s/*%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))
+      WSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
       f = ROOT.TFile(WSFileName,"read")
       inputWS = f.Get(inputWSName__)
       d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
@@ -226,8 +227,10 @@ if not opt.skipVertexScenarioSplit:
       inputWS.Delete()
       f.Close()
     # Check if replacement dataset has too few entries: if so throw error
-    if( datasetWVForFit[MHNominal].numEntries() < opt.replacementThreshold )|( datasetWVForFit[MHNominal].sumEntries() < 0. ):
-      print " --> [ERROR] replacement dataset (%s,%s) has too few entries (%g < %g)"%(procReplacementFit,catReplacementFit,datasetWVForFit[MHNominal].numEntries,opt.replacementThreshold)
+    print MHNominal , datasetWVForFit[MHNominal].numEntries() ," < ",opt.replacementThreshold," || ", datasetWVForFit[MHNominal].sumEntries()," < " ,0. 
+    if( datasetWVForFit[MHNominal].numEntries() < opt.replacementThreshold ) or ( datasetWVForFit[MHNominal].sumEntries() < 0. ):
+      print(procReplacementFit,catReplacementFit,datasetWVForFit[MHNominal].numEntries,opt.replacementThreshold)
+      print " --> [ERROR] replacement dataset (%s,%s) has too few entries (%g < %g)"%(procReplacementFit,catReplacementFit,datasetWVForFit[MHNominal].numEntries(),opt.replacementThreshold)
       sys.exit(1)
     else:
       procWVFit, catWVFit = procReplacementFit, catReplacementFit

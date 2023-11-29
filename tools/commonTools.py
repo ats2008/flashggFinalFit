@@ -18,16 +18,20 @@ def extractWSFileNames( _inputWSDir ):
   if not os.path.isdir(_inputWSDir):
     print " --> [ERROR] No such directory (%s)"
     return False
-  return glob.glob("%s/output_*.root"%_inputWSDir)
+  return glob.glob("%s/*.root"%_inputWSDir)
 
 def extractListOfProcs( _listOfWSFileNames ):
   procs = []
   for fName in _listOfWSFileNames:
-    p = fName.split("pythia8_")[1].split(".root")[0]
+    print(fName)
+    p = fName.split('/')[-1].split("_")[0].split(".root")[0]
     if p not in procs: procs.append(p)
   return ",".join(procs)
 
 def extractListOfCats( _listOfWSFileNames ):
+  print _listOfWSFileNames
+  print "inputWSName__  " , inputWSName__
+  print 
   f0 = ROOT.TFile(_listOfWSFileNames[0]) 
   ws = f0.Get(inputWSName__)
   allData = ws.allData()

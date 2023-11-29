@@ -86,6 +86,7 @@ f = uproot.open(opt.inputTreeFile)
 if inputTreeDir == '': listOfTreeNames == f.keys()
 else: listOfTreeNames = f[inputTreeDir].keys()
 # If cats = 'auto' then determine from list of trees
+print "Cats  : ",cats
 if cats == 'auto':
   cats = []
   for tn in listOfTreeNames:
@@ -98,7 +99,7 @@ if cats == 'auto':
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Open input ROOT file
 f = ROOT.TFile(opt.inputTreeFile)
-
+print "Opened File ",opt.inputTreeFile
 # Open output ROOT file and initiate workspace to store RooDataSets
 if opt.outputWSDir is not None: outputWSDir = opt.outputWSDir+"/ws"
 else: outputWSDir = "/".join(opt.inputTreeFile.split("/")[:-1])+"/ws"
@@ -120,10 +121,9 @@ aset = make_argset(ws,varNames)
 for cat in cats:
   print " --> Extracting events from category: %s"%cat
   if inputTreeDir == '': treeName = "Data_%s_%s"%(sqrts__,cat)
-  else: treeName = "%s/Data_%s_%s"%(inputTreeDir,sqrts__,cat)
+  else: treeName = "%s/Data_%s_TrippleHTag_%s"%(inputTreeDir,sqrts__,cat)
   print "    * tree: %s"%treeName
   t = f.Get(treeName)
-
   # Define dataset for cat
   dname = "Data_%s_%s"%(sqrts__,cat)  
   d = ROOT.RooDataSet(dname,dname,aset,'weight')

@@ -38,6 +38,9 @@ def writeCondorSub(_file,_exec,_queue,_nJobs,_jobOpts,doHoldOnFailure=True,doPer
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def writeSubFiles(_opts):
+  print "  --> Wring Submit files ! "
+  print _opts
+  print "groupSignalFitJobsByCat : ", _opts['groupSignalFitJobsByCat']
   # Make directory to store sub files
   if not os.path.isdir("%s/outdir_%s"%(swd__,_opts['ext'])): os.system("mkdir %s/outdir_%s"%(swd__,_opts['ext']))
   if not os.path.isdir("%s/outdir_%s/%s"%(swd__,_opts['ext'],_opts['mode'])): os.system("mkdir %s/outdir_%s/%s"%(swd__,_opts['ext'],_opts['mode']))
@@ -49,6 +52,7 @@ def writeSubFiles(_opts):
   
   # CONDOR
   if _opts['batch'] == "condor":
+    print "  --> Processing for condor submission"
     _executable = "condor_%s_%s"%(_opts['mode'],_opts['ext'])
     _f = open("%s/%s.sh"%(_jobdir,_executable),"w") # single .sh script split into separate jobs
     writePreamble(_f)

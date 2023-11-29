@@ -51,7 +51,9 @@ if opt.doPlots:
   if not os.path.isdir("%s/outdir_%s/fTest/Plots"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/fTest/Plots"%(swd__,opt.ext))
 
 # Load xvar to fit
-nominalWSFileName = glob.glob("%s/output*"%(opt.inputWSDir))[0]
+nominalWSFileName = glob.glob("%s/*.root"%(opt.inputWSDir))[0]
+print(nominalWSFileName)
+print(inputWSName__)
 f0 = ROOT.TFile(nominalWSFileName,"read")
 inputWS0 = f0.Get(inputWSName__)
 xvar = inputWS0.var(opt.xvar)
@@ -69,7 +71,11 @@ MH.setConstant(True)
 df = pd.DataFrame(columns=['proc','sumEntries','nRV','nWV'])
 procYields = od()
 for proc in opt.procs.split(","):
-  WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,opt.mass,proc))[0]
+  print "%s\n"%(opt.inputWSDir)
+  print "%s\n"%(opt.mass)
+  print "%s\n"%(proc)
+  print "%s/*%s*%s.root\n"%(opt.inputWSDir,opt.mass,proc)
+  WSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,opt.mass,proc))[0]
   f = ROOT.TFile(WSFileName,"read")
   inputWS = f.Get(inputWSName__)
   d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset)
@@ -80,13 +86,14 @@ for proc in opt.procs.split(","):
 # Extract processes to perform fTest (i.e. first nProcsToFTest):
 if( opt.nProcsToFTest == -1)|( opt.nProcsToFTest > len(opt.procs.split(",")) ): procsToFTest = opt.procs.split(",")
 else: procsToFTest = list(df.sort_values('sumEntries',ascending=False)[0:opt.nProcsToFTest].proc.values)
+
 for pidx, proc in enumerate(procsToFTest): 
 
   print "\n --> Process (%g): %s"%(pidx,proc)
 
   # Split dataset to RV/WV: ssf requires input as dict (with mass point as key)
   datasets_RV, datasets_WV = od(), od()
-  WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,opt.mass,proc))[0]
+  WSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,opt.mass,proc))[0]
   f = ROOT.TFile(WSFileName,"read")
   inputWS = f.Get(inputWSName__)
   d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset)
@@ -146,6 +153,7 @@ for pidx, proc in enumerate(procsToFTest):
   # Close ROOT file
   inputWS.Delete()
   f.Close()
+
 
 # Make output
 if not os.path.isdir("%s/outdir_%s/fTest/json"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/fTest/json"%(swd__,opt.ext))

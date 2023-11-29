@@ -26,11 +26,18 @@ globalXSBRMap['example']['TTH'] = {'mode':'ttH'}
 globalXSBRMap['example']['BBH'] = {'mode':'bbH'}
 globalXSBRMap['example']['THQ'] = {'mode':'tHq'}
 globalXSBRMap['example']['THW'] = {'mode':'tHW'}
-# ...
 
+globalXSBRMap['trippleH'] = od()
+globalXSBRMap['trippleH']['decay']   = {'mode':'constant','factor': 0.00231 }
+globalXSBRMap['trippleH']['singleH'] = {'mode':'constant','factor':55.201}
+globalXSBRMap['trippleH']['doubleH'] = {'mode':'constant','factor':3.953e-2}
+globalXSBRMap['trippleH']['ggHHH']   = {'mode':'constant','factor':7.58055e-5}
+
+# ...
 # STXS analysis: add factor for bin composition
 globalXSBRMap['STXS'] = od()
 globalXSBRMap['STXS']['decay'] = {'mode':'hgg'}
+
 # ggH STXS stage 1.2 bins
 globalXSBRMap['STXS']['GG2H_FWDH'] = {'mode':'ggH','factor':0.0809}
 globalXSBRMap['STXS']['GG2H_PTH_200_300'] = {'mode':'ggH','factor':0.0098}
@@ -49,6 +56,7 @@ globalXSBRMap['STXS']['GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_0_25'] = {'mode':'g
 globalXSBRMap['STXS']['GG2H_GE2J_MJJ_350_700_PTH_0_200_PTHJJ_GT25'] = {'mode':'ggH','factor':0.0077}
 globalXSBRMap['STXS']['GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_0_25'] = {'mode':'ggH','factor':0.0028}
 globalXSBRMap['STXS']['GG2H_GE2J_MJJ_GT700_PTH_0_200_PTHJJ_GT25'] = {'mode':'ggH','factor':0.0032}
+
 # ggZH hadronic: merged with ggH STXS stage 1.2 bins in fit
 globalXSBRMap['STXS']['GG2HQQ_FWDH'] = {'mode':'ggZH','factor':0.0273*BR_Z_qq}
 globalXSBRMap['STXS']['GG2HQQ_PTH_200_300'] = {'mode':'ggZH','factor':0.1393*BR_Z_qq}

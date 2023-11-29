@@ -56,8 +56,16 @@ pLUT['FracGaussian']['p2'] = [0.00001,-0.00001,0.00001]
 def poisson_interval(x,eSumW2,level=0.68):
   neff = x**2/(eSumW2**2)
   scale = abs(x)/neff
+  #print "x,eSumW2 , neff, scale : "
+  #print x[:10]
+  #print eSumW2[:10]
+  #print neff[:10]
+  #print scale[:10]
+
   l = scipy.stats.gamma.interval(level, neff, scale=scale,)[0]
   u = scipy.stats.gamma.interval(level, neff+1, scale=scale,)[1]
+  #print "l" , l[:10]
+  #print "u" , u[:10]
   # protect against no effective entries
   l[neff==0] = 0.
   # protect against no variance
@@ -74,7 +82,7 @@ def calcChi2(x,pdf,d,errorType="Poisson",_verbose=False,fitRange=[105,150]):
 
   k = 0. # number of non empty bins (for calc degrees of freedom)
   normFactor = d.sumEntries()
-  
+  # print " normFactor  :  ",normFactor
   # Using numpy and poisson error
   bins, nPdf, nData, eDataSumW2 = [], [],[],[]
   for i in range(d.numEntries()):
@@ -85,11 +93,12 @@ def calcChi2(x,pdf,d,errorType="Poisson",_verbose=False,fitRange=[105,150]):
     if ndata*ndata == 0: continue
     npdf = pdf.getVal(ROOT.RooArgSet(x))*normFactor*d.binVolume()
     eLo, eHi = ROOT.Double(), ROOT.Double()
-    d.weightError(eLo,eHi,ROOT.RooAbsData.SumW2)
-    bins.append(i)
-    nPdf.append(npdf)
-    nData.append(ndata)
-    eDataSumW2.append(eHi) if npdf>ndata else eDataSumW2.append(eLo)
+    d.weightError( eLo, eHi, ROOT.RooAbsData.SumW2 )
+    # print " ndata,npdf,eLo,eHi  d.binVolume() | " , ndata,npdf,eLo,eHi,d.binVolume()
+    bins.append( i )
+    nPdf.append( npdf )
+    nData.append( ndata )
+    eDataSumW2.append( eHi ) if npdf>ndata else eDataSumW2.append(eLo)
     k += 1
 
   # Convert to numpy array
@@ -105,6 +114,8 @@ def calcChi2(x,pdf,d,errorType="Poisson",_verbose=False,fitRange=[105,150]):
     #eDataPoisson = (nPdf>nData)*eHi + (nPdf<=nData)*eLo 
     e = eDataPoisson
     # Calculate chi2 terms
+    #print "nData ",nData[:10]
+    #print "nData ",nData[:10]
     terms = (nPdf-nData)**2/(eDataPoisson**2)
   elif errorType == "Expected":
     # Change error to sqrt pdf entries
@@ -138,7 +149,7 @@ def nChi2Addition(X,ssf,verbose=False):
   C = len(X)-1 # number of fit params (-1 for MH)
   for mp,d in ssf.DataHists.iteritems():
     ssf.MH.setVal(int(mp))
-    chi2, k  = calcChi2(ssf.xvar,ssf.Pdfs['final'],d,_verbose=verbose)
+    chi2, k  = calcChi2(ssf.xvar,ssf.Pdfs['final'],d,errorType="Poisson",_verbose=verbose)
     chi2sum += chi2
     K += k
   # N degrees of freedom
@@ -393,6 +404,7 @@ class SimultaneousFit:
   def getReducedChi2(self):
     x = self.extractX0()
     self.Chi2 = nChi2Addition(x,self)
+    #print "Chi2  : ",self.Chi2 , "  ndof ",self.Ndof
     return self.Chi2/int(self.Ndof)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  

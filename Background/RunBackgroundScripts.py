@@ -36,7 +36,7 @@ if opt.inputConfig != '':
     _cfg = backgroundScriptCfg
 
     #Extract options
-    options['dataFile']     = "%s/allData.root"%_cfg['inputWSDir']
+    options['dataFile']     = _cfg['inputWSDir']+'/'+_cfg['inputWSFile']
     options['cats']         = _cfg['cats']
     options['catOffset']    = _cfg['catOffset']
     options['ext']          = _cfg['ext']

@@ -40,6 +40,7 @@ if opt.inputConfig != '':
 
     #Extract options
     options['inputWSDir']   = _cfg['inputWSDir']
+    options['inputWSFile']   = _cfg['inputWSFile']
     options['procs']        = _cfg['procs']
     options['cats']         = _cfg['cats']
     options['ext']          = _cfg['ext']
@@ -60,7 +61,7 @@ if opt.inputConfig != '':
     options['printOnly']               = opt.printOnly
   
     #Delete copy of file
-    os.system("rm config.py")
+    #os.system("rm config.py")
   
   else:
     print "[ERROR] %s config file does not exist. Leaving..."%opt.inputConfig
@@ -80,7 +81,15 @@ if options['mode'] not in ['fTest','getEffAcc','getDiagProc','calcPhotonSyst','s
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Extract list of filenames
-WSFileNames = extractWSFileNames(options['inputWSDir'])
+print( 'inputWSFile' in options)
+if 'inputWSFile' not in options:
+    WSFileNames = extractWSFileNames(options['inputWSDir'])
+else :
+    if options['inputWSFile']=='auto':
+        WSFileNames = extractWSFileNames(options['inputWSDir'])
+    else:
+        WSFileNames = [options['inputWSDir']+'/'+fN  for fN in options['inputWSFile']]
+print(WSFileNames)    
 if not WSFileNames: leave()
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,6 +98,7 @@ if options['procs'] == "auto":
   options['procs'] = extractListOfProcs(WSFileNames)
 options['nProcs'] = len(options['procs'].split(","))
 
+print(WSFileNames)
 if options['cats'] == "auto":
   options['cats'] = extractListOfCats(WSFileNames)
 options['nCats'] = len(options['cats'].split(","))
@@ -125,19 +135,26 @@ elif options['batch'] == "local":
 if options['printOnly']:
   print " --> PRINT ONLY (no submission)"
   print ""
-if options['mode'] == "fTest": print " --> Running signal fit fTest (determine number of gaussians for proc x cat x vertex scenario)..."
+if options['groupSignalFitJobsByCat']:
+  print " --> Group Signal Fits Jobs By Category "
+  print ""
+if   options['mode'] == "fTest": print " --> Running signal fit fTest (determine number of gaussians for proc x cat x vertex scenario)..."
 elif options['mode'] == "getEffAcc": print " --> Getting efficiency x acceptance fractions (requires NOTAG dataset)..."
 elif options['mode'] == "getDiagProc": print " --> Getting diagonal process for each analysis category..."
 elif options['mode'] == "calcPhotonSyst": print " --> Calculating photon shape systematics..."
 elif options['mode'] == "signalFit": print " --> Performing signal fit..."
 elif options['mode'] == "packageOnly": print " --> Packaging signal fits (one file per category)..."
-print " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Make directory to store job scripts and output
 if not os.path.isdir("%s/outdir_%s"%(swd__,options['ext'])): os.system("mkdir %s/outdir_%s"%(swd__,options['ext']))
+print " --> Job files to be prepared under :  %s/outdir_%s"%(swd__,options['ext'])
+print ""
+
+print " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
 # Write submission files: style depends on batch system
+print("Options\n\t : ",options)
 writeSubFiles(options)
 print "  --> Finished writing submission scripts"
 
