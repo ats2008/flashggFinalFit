@@ -51,9 +51,12 @@ if opt.doPlots:
   if not os.path.isdir("%s/outdir_%s/fTest/Plots"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/fTest/Plots"%(swd__,opt.ext))
 
 # Load xvar to fit
-nominalWSFileName = glob.glob("%s/*.root"%(opt.inputWSDir))[0]
+fstr="%s/*.root"%(opt.inputWSDir)
+print "Searching ",fstr
+nominalWSFileName = glob.glob(fstr)[0]
 print(nominalWSFileName)
 print(inputWSName__)
+print(opt.xvar)
 f0 = ROOT.TFile(nominalWSFileName,"read")
 inputWS0 = f0.Get(inputWSName__)
 xvar = inputWS0.var(opt.xvar)
@@ -74,11 +77,13 @@ for proc in opt.procs.split(","):
   print "%s\n"%(opt.inputWSDir)
   print "%s\n"%(opt.mass)
   print "%s\n"%(proc)
-  print "%s/*%s*%s.root\n"%(opt.inputWSDir,opt.mass,proc)
-  WSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,opt.mass,proc))[0]
+  sname="%s/*%s.root"%(opt.inputWSDir,proc)
+  print sname
+  print glob.glob(sname)
+  WSFileName = glob.glob(sname)[0]
   f = ROOT.TFile(WSFileName,"read")
   inputWS = f.Get(inputWSName__)
-  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset)
+  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc),opt.mass,sqrts__,opt.cat)),aset)
   df.loc[len(df)] = [proc,d.sumEntries(),1,1]
   inputWS.Delete()
   f.Close()
@@ -93,10 +98,11 @@ for pidx, proc in enumerate(procsToFTest):
 
   # Split dataset to RV/WV: ssf requires input as dict (with mass point as key)
   datasets_RV, datasets_WV = od(), od()
-  WSFileName = glob.glob("%s/*%s*%s.root"%(opt.inputWSDir,opt.mass,proc))[0]
+  sname="%s/*%s.root"%(opt.inputWSDir,proc)
+  WSFileName = glob.glob(sname)[0]
   f = ROOT.TFile(WSFileName,"read")
   inputWS = f.Get(inputWSName__)
-  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset)
+  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc),opt.mass,sqrts__,opt.cat)),aset)
   datasets_RV[opt.mass] = splitRVWV(d,aset,mode="RV")
   datasets_WV[opt.mass] = splitRVWV(d,aset,mode="WV")
 

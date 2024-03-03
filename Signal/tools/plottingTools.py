@@ -553,10 +553,13 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.02):
  
   if len(_opt.years.split(","))>1: yearStr, yearExt = "", ""
   else: yearStr, yearExt = _opt.years, "_%s"%_opt.years
-
+  
+  print "CATS being processed : ",_opt.cats
   if _opt.cats == 'all': catStr, catExt = "All categories", "all"
   elif _opt.cats == 'wall': catStr, catExt = "#splitline{All categories}{S/(S+B) weighted}", "wall"
-  elif len(_opt.cats.split(","))>1: procStr, procExt = "Multiple categories", "multipleCats"
+  elif len(_opt.cats.split(","))>1: 
+    procStr, procExt = "Multiple categories", "multipleCats"
+    catStr, catExt = Translate(_opt.cats,translateCats), _opt.cats
   else: catStr, catExt = Translate(_opt.cats,translateCats), _opt.cats
  
   lat1.DrawLatex(0.85,0.86,"%s"%catStr)

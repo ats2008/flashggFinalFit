@@ -121,7 +121,7 @@ aset = make_argset(ws,varNames)
 for cat in cats:
   print " --> Extracting events from category: %s"%cat
   if inputTreeDir == '': treeName = "Data_%s_%s"%(sqrts__,cat)
-  else: treeName = "%s/Data_%s_TrippleHTag_%s"%(inputTreeDir,sqrts__,cat)
+  else: treeName = "%s/Data_TrippleHTag_%s_%s"%(inputTreeDir,sqrts__,cat)
   print "    * tree: %s"%treeName
   t = f.Get(treeName)
   # Define dataset for cat

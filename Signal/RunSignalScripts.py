@@ -14,6 +14,11 @@ def get_options():
   parser = OptionParser()
   # Take inputs from config file
   parser.add_option('--inputConfig', dest='inputConfig', default='', help="Name of input config file (if specified will ignore other options)")
+  parser.add_option('--inputWSDir', dest='inputWSDir', default=None, help="overide inputWSDir in config")
+  parser.add_option('--inputWSFile', dest='inputWSFile', default=None, help="overide inputWSFile in config")
+  parser.add_option('--procs', dest='procs', default=None, help="overide procs in config")
+  parser.add_option('--year', dest='year', default=None, help="overide year in config")
+  parser.add_option('--ext', dest='ext', default=None, help="overide ext in config")
   parser.add_option('--mode', dest='mode', default='', help="Which script to run. Options: ['fTest','getDiagProc','getEffAcc','calcPhotonSyst','signalFit','packageOnly','sigPlotsOnly']")
   parser.add_option('--modeOpts', dest='modeOpts', default='', help="Additional options to add to command line when running scripts (specify all within quotes e.g. \"--XYZ ABC\")")
   parser.add_option('--jobOpts', dest='jobOpts', default='', help="Additional options to add to job submission. For Condor separate individual options with a colon (specify all within quotes e.g. \"option_xyz = abc+option_123 = 456\")")
@@ -59,7 +64,21 @@ if opt.inputConfig != '':
     options['jobOpts']                 = opt.jobOpts
     options['groupSignalFitJobsByCat'] = opt.groupSignalFitJobsByCat
     options['printOnly']               = opt.printOnly
-  
+    if opt.inputWSFile:
+        options['inputWSFile'] = opt.inputWSFile
+        print "inputWSFile set as ",options['inputWSFile']
+    if opt.procs:
+        options['procs'] = opt.procs
+        print "procs set as ",options['procs']
+    if opt.inputWSDir:
+        options['inputWSDir'] = opt.inputWSDir
+        print "inputWSDir set as " , options['inputWSDir']
+    if opt.year:
+        options['year'] = opt.year
+        print "Year set as : ",options['year'] 
+    if opt.ext:
+        options['ext'] = opt.ext
+        print "Ext set as : ",options['ext'] 
     #Delete copy of file
     #os.system("rm config.py")
   

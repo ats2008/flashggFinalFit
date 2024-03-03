@@ -36,20 +36,28 @@ globalReplacementMap['trippleH']['catWV']  = "cat0"
 #  * if few events in diagonal process then may need to change the category aswell (see catRVMap)
 #  * map must contain entry for all cats being processed (for replacement proc and cat)
 globalReplacementMap['trippleH']['procRVMap'] = od()
-#globalReplacementMap["trippleH"]["procRVMap"]["doubleH"] = "doubleH"
-#globalReplacementMap["trippleH"]["procRVMap"]["singleH"] = "doubleH"
+globalReplacementMap["trippleH"]["procRVMap"]["doubleH"] = "doubleH"
+globalReplacementMap["trippleH"]["procRVMap"]["singleH"] = "doubleH"
 globalReplacementMap["trippleH"]["procRVMap"]["ggHHH"]   = "ggHHH"
+globalReplacementMap["trippleH"]["procRVMap"]["ggH"]   = "ggHHH"
+globalReplacementMap["trippleH"]["procRVMap"]["ttH"]   = "ttH"
+globalReplacementMap["trippleH"]["procRVMap"]["vbfH"]   = "vbfH"
+globalReplacementMap["trippleH"]["procRVMap"]["vH"]   = "ggHHH"
+globalReplacementMap["trippleH"]["procRVMap"]["ggHH"]   = "ggHHH"
+globalReplacementMap["trippleH"]["procRVMap"]["ttHH"]   = "ggHHH"
+globalReplacementMap["trippleH"]["procRVMap"]["vbfHH"]   = "ggHHH"
+globalReplacementMap["trippleH"]["procRVMap"]["vHH"]   = "ggHHH"
 # Replacement category for RV fit
 globalReplacementMap["trippleH"]["catRVMap"] = od()
-globalReplacementMap["trippleH"]["catRVMap"]["cat0"] = "cat0"
-globalReplacementMap["trippleH"]["catRVMap"]["cat1"] = "cat0"
-globalReplacementMap["trippleH"]["catRVMap"]["cat2"] = "cat0"
-globalReplacementMap["trippleH"]["catRVMap"]["cat3"] = "cat0"
-globalReplacementMap["trippleH"]["catRVMap"]["cat4"] = "cat0"
-globalReplacementMap["trippleH"]["catRVMap"]["cat5"] = "cat0"
-globalReplacementMap["trippleH"]["catRVMap"]["catX"] = "cat0"
+globalReplacementMap["trippleH"]["catRVMap"]["CAT0"] = "CAT0"
+globalReplacementMap["trippleH"]["catRVMap"]["CAT1"] = "CAT0"
+globalReplacementMap["trippleH"]["catRVMap"]["CAT2"] = "CAT0"
+globalReplacementMap["trippleH"]["catRVMap"]["CAT3"] = "CAT0"
+globalReplacementMap["trippleH"]["catRVMap"]["CAT4"] = "CAT0"
+globalReplacementMap["trippleH"]["catRVMap"]["CAT5"] = "CAT0"
+globalReplacementMap["trippleH"]["catRVMap"]["CATX"] = "CAT0"
 
-
+globalReplacementMap['trippleH_v2'] = globalReplacementMap['trippleH']
 
 # STXS analysis
 globalReplacementMap['STXS'] = od()

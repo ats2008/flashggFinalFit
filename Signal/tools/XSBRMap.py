@@ -28,10 +28,38 @@ globalXSBRMap['example']['THQ'] = {'mode':'tHq'}
 globalXSBRMap['example']['THW'] = {'mode':'tHW'}
 
 globalXSBRMap['trippleH'] = od()
-globalXSBRMap['trippleH']['decay']   = {'mode':'constant','factor': 0.00231 }
-globalXSBRMap['trippleH']['singleH'] = {'mode':'constant','factor':55.201}
-globalXSBRMap['trippleH']['doubleH'] = {'mode':'constant','factor':3.953e-2}
-globalXSBRMap['trippleH']['ggHHH']   = {'mode':'constant','factor':7.58055e-5}
+globalXSBRMap['trippleH']['decay']   = {'mode':'constant','factor': 0.00231  }
+globalXSBRMap['trippleH']['singleH'] = {'mode':'constant','factor': 55.201    }
+globalXSBRMap['trippleH']['doubleH'] = {'mode':'constant','factor':  3.953e-2  }
+globalXSBRMap['trippleH']['ggHHH']   = {'mode':'constant','factor':  7.58055e-5}
+
+globalXSBRMap['trippleH_v2'] = od()
+globalXSBRMap['trippleH_v2']['decay']     = {'mode':'constant','factor': 1.0       }
+globalXSBRMap['trippleH_v2']['ggHHH']     = {'mode':'constant','factor': 1.7e-7    }
+globalXSBRMap['trippleH_v2']['singleH']   = {'mode':'constant','factor': 0.1253    } ## ggH vbfH vH ttH
+globalXSBRMap['trippleH_v2']['doubleH']   = {'mode':'constant','factor': 8.667e-5  } ## ggHH + vbfHH
+globalXSBRMap['trippleH_v2']['ttHH']      = {'mode':'constant','factor': 2.05e-6   }
+globalXSBRMap['trippleH_v2']['ggHH']       = {'mode':'constant','factor': 0.08210e-3   }
+globalXSBRMap['trippleH_v2']['vbfHH']       = {'mode':'constant','factor': 4.57e-6   }
+globalXSBRMap['trippleH_v2']['vHH']       = {'mode':'constant','factor': 2.29e-6   }
+globalXSBRMap['trippleH_v2']['vHHTo2B2G']       = {'mode':'constant','factor': 2.29e-6   }
+globalXSBRMap['trippleH_v2']['ggH']       = {'mode':'ggH'}
+globalXSBRMap['trippleH_v2']['ttH']       = {'mode':'ttH'}
+globalXSBRMap['trippleH_v2']['vH']        = {'mode':'constant','factor':5.12339e-3}
+globalXSBRMap['trippleH_v2']['vbfH']        = {'mode':'qqH'}
+globalXSBRMap['trippleH_v2']['c3_0_d4_0']        = {'mode':'constant','factor':  0.000173 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_0_d4_99']       = {'mode':'constant','factor':  0.027491 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_0_d4_m1']     = {'mode':'constant','factor':  0.000190 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_19_d4_19']       = {'mode':'constant','factor':  0.691084 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_1_d4_0']        = {'mode':'constant','factor':  0.000135 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_1_d4_2']        = {'mode':'constant','factor':  0.000074 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_2_d4_m1']     = {'mode':'constant','factor':  0.000268 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_4_d4_9']        = {'mode':'constant','factor':  0.001144 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_m1_d4_0']     = {'mode':'constant','factor':  0.000526 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_m1_d4_m1']   = {'mode':'constant','factor':  0.000507 *1e-3 }
+globalXSBRMap['trippleH_v2']['c3_m1p5_d4_m0p5'] = {'mode':'constant','factor':  0.000903 *1e-3 }
+
+
 
 # ...
 # STXS analysis: add factor for bin composition
@@ -39,15 +67,15 @@ globalXSBRMap['STXS'] = od()
 globalXSBRMap['STXS']['decay'] = {'mode':'hgg'}
 
 # ggH STXS stage 1.2 bins
-globalXSBRMap['STXS']['GG2H_FWDH'] = {'mode':'ggH','factor':0.0809}
-globalXSBRMap['STXS']['GG2H_PTH_200_300'] = {'mode':'ggH','factor':0.0098}
-globalXSBRMap['STXS']['GG2H_PTH_300_450'] = {'mode':'ggH','factor':0.0025}
-globalXSBRMap['STXS']['GG2H_PTH_450_650'] = {'mode':'ggH','factor':0.0003}
-globalXSBRMap['STXS']['GG2H_PTH_GT650'] = {'mode':'ggH','factor':0.0001}
-globalXSBRMap['STXS']['GG2H_0J_PTH_0_10'] = {'mode':'ggH','factor':0.1387}
-globalXSBRMap['STXS']['GG2H_0J_PTH_GT10'] = {'mode':'ggH','factor':0.3940}
-globalXSBRMap['STXS']['GG2H_1J_PTH_0_60'] = {'mode':'ggH','factor':0.1477}
-globalXSBRMap['STXS']['GG2H_1J_PTH_60_120'] = {'mode':'ggH','factor':0.1023}
+globalXSBRMap['STXS']['GG2H_FWDH']           = {'mode':'ggH','factor':0.0809}
+globalXSBRMap['STXS']['GG2H_PTH_200_300']    = {'mode':'ggH','factor':0.0098}
+globalXSBRMap['STXS']['GG2H_PTH_300_450']    = {'mode':'ggH','factor':0.0025}
+globalXSBRMap['STXS']['GG2H_PTH_450_650']    = {'mode':'ggH','factor':0.0003}
+globalXSBRMap['STXS']['GG2H_PTH_GT650']      = {'mode':'ggH','factor':0.0001}
+globalXSBRMap['STXS']['GG2H_0J_PTH_0_10']    = {'mode':'ggH','factor':0.1387}
+globalXSBRMap['STXS']['GG2H_0J_PTH_GT10']    = {'mode':'ggH','factor':0.3940}
+globalXSBRMap['STXS']['GG2H_1J_PTH_0_60']    = {'mode':'ggH','factor':0.1477}
+globalXSBRMap['STXS']['GG2H_1J_PTH_60_120']  = {'mode':'ggH','factor':0.1023}
 globalXSBRMap['STXS']['GG2H_1J_PTH_120_200'] = {'mode':'ggH','factor':0.0182}
 globalXSBRMap['STXS']['GG2H_GE2J_MJJ_0_350_PTH_0_60'] = {'mode':'ggH','factor':0.0256}
 globalXSBRMap['STXS']['GG2H_GE2J_MJJ_0_350_PTH_60_120'] = {'mode':'ggH','factor':0.0410}

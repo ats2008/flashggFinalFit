@@ -18,6 +18,7 @@ from HiggsAnalysis.CombinedLimit.ModelTools import *
 from HiggsAnalysis.CombinedLimit.PhysicsModel import *
 from HiggsAnalysis.CombinedLimit.SMHiggsBuilder import *
 import HiggsAnalysis.CombinedLimit.PhysicsModel as models
+
 class dummy_options:
   def __init__(self):
     self.physModel = "HiggsAnalysis.CombinedLimit.PhysicsModel:floatingHiggsMass"
@@ -56,7 +57,9 @@ def initialiseXSBR():
 
   # Store numpy arrays for each production mode in ordered dict
   xsbr = od()
-  for pm in productionModes: xsbr[pm] = []
+  for pm in productionModes: 
+    #print pm
+    xsbr[pm] = []
   xsbr[decayMode] = []
   xsbr['constant'] = []
   mh = 120.
@@ -136,6 +139,7 @@ class FinalModel:
   # Functions to get XS, BR and EA splines for given proc/decay from map
   def buildXSBRSplines(self):
     mh = np.linspace(120.,130.,101)
+    print(self.xsbrMap)
     # XS
     fp = self.xsbrMap[self.proc]['factor'] if 'factor' in self.xsbrMap[self.proc] else 1.
     mp = self.xsbrMap[self.proc]['mode']
@@ -143,7 +147,7 @@ class FinalModel:
     print "in buildXSBRSplines !"
     print "\t f prod. (fp)  : ",fp
     print "\t mode production. ",mp
-    print "\t xs : fp*self.XSBR[mp] = ",xs
+    #print "\t xs : fp*self.XSBR[mp] = ",xs
     self.Splines['xs'] = ROOT.RooSpline1D("fxs_%s_%s"%(self.proc,self.sqrts),"fxs_%s_%s"%(self.proc,self.sqrts),self.MH,len(mh),mh,xs)
     # BR
     fd = self.xsbrMap['decay']['factor'] if 'factor' in self.xsbrMap['decay'] else 1.

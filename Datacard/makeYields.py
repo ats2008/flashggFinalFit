@@ -91,6 +91,7 @@ for year in years:
     _procOriginal = proc
     _proc = "%s_%s_%s"%(procToDatacardName(proc),year,decayMode)
     _proc_s0 = procToData(proc.split("_")[0])
+    _proc_s0=procToDatacardName(proc)
 
     # Define category: add year tag if not merging
     if opt.mergeYears: _cat = opt.cat
@@ -99,8 +100,11 @@ for year in years:
     # Input flashgg ws 
     #print("%s/*%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc))
     #_inputWSFile = glob.glob("%s/*%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc))[0]
-    print( "%s/*M%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc) )
-    _inputWSFile = glob.glob("%s/*M%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc))[0]
+    namestr="%s/*M%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc)
+    namestr="%s/*_%s.root"%(inputWSDirMap[year],proc)
+    print namestr
+    _inputWSFile = glob.glob(namestr)[0]
+
     _nominalDataName = "%s_%s_%s_%s"%(_proc_s0,opt.mass,sqrts__,opt.cat)
 
     # If opt.skipZeroes check nominal yield if 0 then do not add
@@ -184,16 +188,18 @@ if opt.doSystematics:
   # No experimental systematics for NOTAG
   if opt.cat != "NOTAG":
     for s in experimental_systematics:  
-      print(s)
       if s['type'] == 'factory': 
-	# Fix for HEM as only in 2018 workspaces
-	if s['name'] == 'JetHEM': experimentalFactoryType[s['name']] = "a_h"
-	else: experimentalFactoryType[s['name']] = factoryType(data,s)
+      # Fix for HEM as only in 2018 workspaces
+        if s['name'] == 'JetHEM':
+            experimentalFactoryType[s['name']] = "a_h"
+        else: 
+            experimentalFactoryType[s['name']] = factoryType(data,s)
 	
     if experimentalFactoryType[s['name']] in ["a_w","a_h"]:
 	  data['%s_up_yield'%s['name']] = '-'
 	  data['%s_down_yield'%s['name']] = '-'
     else: data['%s_yield'%s['name']] = '-'
+
   print("Exp Syst. : ",experimentalFactoryType)
   for s in theory_systematics: 
     print(s)
@@ -237,6 +243,7 @@ for ir,r in data[data['type']=='sig'].iterrows():
       f_NNLOPS = abs(p.getRealValue("NNLOPSweight")) if "NNLOPSweight" in contents else 1.
       if f_COWCorr == 0: continue
       else: y_COWCorr += w*(f_NNLOPS/f_COWCorr)
+  print(y)
   data.at[ir,'nominal_yield'] = y
   data.at[ir,'sumw2'] = sumw2
   if not opt.skipCOWCorr: data.at[ir,'nominal_yield_COWCorr'] = y_COWCorr

@@ -49,8 +49,8 @@ if opt.cats in ['all','wall']:
     citr += 1
 else:
   for cat in opt.cats.split(","):
-    #f = "%s/outdir_%s/CMS-HGG_sigfit_%s_%s_%s.root"%(swd__,opt.ext,opt.ext,cat)
-    f = "%s/outdir_%s/CMS-HGG_sigfit_%s_%s_%s.root"%(swd__,opt.ext,opt.ext,cat,'merged')
+    f = glob.glob("%s/outdir_%s/CMS-HGG_sigfit_%s_%s_*.root"%(swd__,opt.ext,opt.ext,cat))[0]
+    #f = "%s/outdir_%s/CMS-HGG_sigfit_%s_%s_%s.root"%(swd__,opt.ext,opt.ext,cat,'merged')
     inputFiles[cat] = f
     if citr == 0:
       w = ROOT.TFile(f).Get("wsig_13TeV")
@@ -101,6 +101,7 @@ for cat,f in inputFiles.iteritems():
         k = "%s_%s_%s"%(proc,cat,year)
         _id = "%s_%s_%s_%s"%(proc,year,cat,sqrts__)
         norms[k] = w.function("%s_%s_normThisLumi"%(outputWSObjectTitle__,_id))
+        print "Getting norn : ","%s_%s_normThisLumi"%(outputWSObjectTitle__,_id)
     
   # Iterate over norms: extract total category norm
   catNorm = 0
@@ -122,6 +123,7 @@ for cat,f in inputFiles.iteritems():
     if nval < opt.threshold*catNorm: continue # Prune processes which contribute less that threshold of signal mod
 
     # Make empty copy of dataset
+    print "getting datast : " , "sig_mass_m%s_%s"%(opt.mass,_id)
     d = w.data("sig_mass_m%s_%s"%(opt.mass,_id))
     d_rwgt = d.emptyClone(_id)
     

@@ -223,7 +223,7 @@ double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *
 
 }
 
-double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooDataSet *data, std::string name){
+double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooDataSet *data, std::string name,std::string label){
 
   double prob;
   int ntoys = 500;
@@ -276,22 +276,26 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooDataSet *data, std
     }
     std::cout << "[INFO] complete" << std::endl;
     prob = (double)npass / ntoys;
-
+    std::sort(toy_chi2.begin(), toy_chi2.end());
     TCanvas *can = new TCanvas();
     double medianChi2 = toy_chi2[(int)(((float)ntoys)/2)];
     double rms = TMath::Sqrt(medianChi2);
-
-    TH1F toyhist(Form("gofTest_%s.pdf",pdf->GetName()),";Chi2;",50,medianChi2-5*rms,medianChi2+5*rms);
+    std::cout<<"here ! rms :  "<<rms<<" end are at : "<<medianChi2-5*rms<<"  | "<<medianChi2+5*rms  <<"\n";
+    TH1F toyhist(Form("gofTest_%s.pdf",pdf->GetName()),";Chi2;",50,medianChi2-8*rms,medianChi2+6*rms);
     for (std::vector<double>::iterator itx = toy_chi2.begin();itx!=toy_chi2.end();itx++){
       toyhist.Fill((*itx));
     }
     toyhist.Draw();
-
+    
+    TLatex latex;
+    //latex.SetFillColorAlpha(kBlue,0.2);
+    latex.SetTextColor(kRed);
+    latex.DrawLatex( chi2*(nBinsForMass-np)- 5.5*rms , toyhist.GetMaximum()*0.8, (label).data());
+    latex.DrawLatex( chi2*(nBinsForMass-np)- 5.5*rms , toyhist.GetMaximum()*0.72, Form("p-val : %f",std::round(prob*1000)/1000));
     TArrow lData(chi2*(nBinsForMass-np),toyhist.GetMaximum(),chi2*(nBinsForMass-np),0);
     lData.SetLineWidth(2);
     lData.Draw();
     can->SaveAs(name.c_str());
-
     // back to best fit 	
     params->assignValueOnly(preParams);
   } else {
@@ -301,10 +305,9 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooDataSet *data, std
   std::cout << "[INFO] p-value  =  " << prob << std::endl;
   delete pdf;
   return prob;
-
 }
 
-void plot(RooRealVar *mass, RooAbsPdf *pdf, RooDataSet *data, string name,vector<string> flashggCats_, int status, double *prob){
+void plot(RooRealVar *mass, RooAbsPdf *pdf, RooDataSet *data, string name,string label,vector<string> flashggCats_, int status, double *prob){
   
   // Chi2 taken from full range fit
   RooPlot *plot_chi2 = mass->frame();
@@ -314,7 +317,7 @@ void plot(RooRealVar *mass, RooAbsPdf *pdf, RooDataSet *data, string name,vector
   int np = pdf->getParameters(*data)->getSize()+1; //Because this pdf has no extend
   double chi2 = plot_chi2->chiSquare(np);
  
-  *prob = getGoodnessOfFit(mass,pdf,data,name);
+  *prob = getGoodnessOfFit(mass,pdf,data,name,label);
   RooPlot *plot = mass->frame();
   mass->setRange("unblindReg_1",mgg_low,115);
   mass->setRange("unblindReg_2",135,mgg_high);
@@ -727,7 +730,7 @@ int main(int argc, char* argv[]){
 
 	FILE *resFile ;
 	if  (singleCategory >-1) resFile = fopen(Form("%s/fTestResults_%s.txt",outDir.c_str(),flashggCats_[singleCategory].c_str()),"w");
-	else resFile = fopen(Form("%s/fTestResults.txt",outDir.c_str()),"w");
+	else resFile = fopen(Form("%s/fTestResults_%d.txt",outDir.c_str(),catOffset),"w");
 	vector<map<string,int> > choices_vec;
 	vector<map<string,std::vector<int> > > choices_envelope_vec;
 	vector<map<string,RooAbsPdf*> > pdfs_vec;
@@ -852,7 +855,7 @@ int main(int argc, char* argv[]){
 					}
 					double gofProb=0;
 					// otherwise we get it later ...
-					if (!saveMultiPdf) plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,(cat+catOffset)),flashggCats_,fitStatus,&gofProb);
+					if (!saveMultiPdf) plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,(cat+catOffset)),"",flashggCats_,fitStatus,&gofProb);
 					cout << "[INFO]\t " << *funcType << " " << order << " " << prevNll << " " << thisNll << " " << chi2 << " " << prob << endl;
 					//fprintf(resFile,"%15s && %d && %10.2f && %10.2f && %10.2f \\\\\n",funcType->c_str(),order,thisNll,chi2,prob);
 					prevNll=thisNll;
@@ -908,7 +911,10 @@ int main(int argc, char* argv[]){
 
 						// Calculate goodness of fit for the thing to be included (will use toys for lowstats)!
 						double gofProb =0; 
-						plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,(cat+catOffset)),flashggCats_,fitStatus,&gofProb);
+						plot(mass,bkgPdf,data,
+                            Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,(cat+catOffset)),
+                            Form("%s-%d",funcType->c_str(),order),
+                            flashggCats_,fitStatus,&gofProb);
 
 						if ((prob < upperEnvThreshold) ) { // Looser requirements for the envelope
 
