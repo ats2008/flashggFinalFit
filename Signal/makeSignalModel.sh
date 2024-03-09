@@ -12,27 +12,27 @@ echo
 
 python3 submit_signal_jobs.py -s ftest  -c test_2016.py  --year 2016Pre --exec
 python3 submit_signal_jobs.py -s ftest  -c test_2016.py  --year 2016Post --exec
-python3 submit_signal_jobs.py -s ftest  -c test_2016.py  --year 2016 --exec
 python3 submit_signal_jobs.py -s ftest  -c test_2017.py  --year 2017 --exec
 python3 submit_signal_jobs.py -s ftest  -c test_2018.py  --year 2018 --exec
+python3 submit_signal_jobs.py -s ftest  -c test_2016.py  --year 2016 --exec
 
 python3 submit_signal_jobs.py -s phoSyst  -c test_2018.py  --year 2018  --exec
 python3 submit_signal_jobs.py -s phoSyst  -c test_2017.py  --year 2017  --exec
-python3 submit_signal_jobs.py -s phoSyst  -c test_2016.py  --year 2016  --exec
 python3 submit_signal_jobs.py -s phoSyst  -c test_2016.py  --year 2016Pre  --exec
 python3 submit_signal_jobs.py -s phoSyst  -c test_2016.py  --year 2016Post  --exec
+python3 submit_signal_jobs.py -s phoSyst  -c test_2016.py  --year 2016  --exec
 
 python3 submit_signal_jobs.py -s signalFit -c test_2018.py  --year 2018  --exec
 python3 submit_signal_jobs.py -s signalFit -c test_2017.py  --year 2017  --exec
-python3 submit_signal_jobs.py -s signalFit -c test_2016.py  --year 2016  --exec
 python3 submit_signal_jobs.py -s signalFit -c test_2016.py  --year 2016Pre  --exec
 python3 submit_signal_jobs.py -s signalFit -c test_2016.py  --year 2016Post  --exec
+python3 submit_signal_jobs.py -s signalFit -c test_2016.py  --year 2016  --exec
 
 python3 submit_signal_jobs.py -s pack -c test_2018.py  --year 2018  --exec
 python3 submit_signal_jobs.py -s pack -c test_2017.py  --year 2017  --exec
-python3 submit_signal_jobs.py -s pack -c test_2016.py  --year 2016  --exec
 python3 submit_signal_jobs.py -s pack -c test_2016.py  --year 2016Pre  --exec
 python3 submit_signal_jobs.py -s pack -c test_2016.py  --year 2016Post  --exec
+python3 submit_signal_jobs.py -s pack -c test_2016.py  --year 2016  --exec
 
 
 python3 submit_signal_jobs.py -s plotPacked --exec
