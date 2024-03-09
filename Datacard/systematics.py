@@ -147,7 +147,8 @@ theory_systematics = [
 
 experimental_systematics = [
                 # Updated luminosity partial-correlation scheme: 13/5/21 (recommended simplified nuisances)
-                {'name':'lumi_13TeV_Uncorrelated','title':'lumi_13TeV_Uncorrelated','type':'constant','prior':'lnN','correlateAcrossYears':0,'value':{'2016':'1.010','2017':'1.020','2018':'1.015','merged' : '1.015'}},
+                {'name':'lumi_13TeV_Uncorrelated','title':'lumi_13TeV_Uncorrelated','type':'constant','prior':'lnN',
+                'correlateAcrossYears':0,'value':{'2016':'1.010','2016Post':'1.010','2016Pre':'1.010','2017':'1.020','2018':'1.015','merged' : '1.015'}},
                 #{'name':'lumi_13TeV_Correlated','title':'lumi_13TeV_Correlated','type':'constant','prior':'lnN','correlateAcrossYears':-1,'value':{'2016':'1.006','2017':'1.009','2018':'1.020'}},
                 #{'name':'lumi_13TeV_Correlated_1718','title':'lumi_13TeV_Correlated_1718','type':'constant','prior':'lnN','correlateAcrossYears':-1,'value':{'2016':'-','2017':'1.006','2018':'1.002'}},
                 #{'name':'LooseMvaSF','title':'CMS_hgg_LooseMvaSF','type':'factory','prior':'lnN','correlateAcrossYears':0},

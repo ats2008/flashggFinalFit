@@ -14,7 +14,6 @@ def addConstantSyst(sd,_syst,options):
   if "json" in _syst['value']:
     fromJson = True
     with open( _syst['value'], "r" ) as jsonfile: uval = json.load(jsonfile)
-
   # Add column to dataFrame with default value
   if _syst['correlateAcrossYears'] == 1: 
     sd[_syst['name']] = '-'
