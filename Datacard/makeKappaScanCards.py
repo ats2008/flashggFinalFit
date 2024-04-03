@@ -1,5 +1,11 @@
 import json,sys,os,argparse
+usage="""
+python3 makeKappaScanCards.py -i datacard_v32p0_raw.txt -o datacardKScan_v32p0.txt
+python3 makeKappaScanCards.py -i datacard_v32p0_noSyst_raw.txt -o datacardKScan_v32p0_noSyst.txt
 
+sed -i 's#v32p0DataCards/WithSysts/##g' datacardKScan_v32p0.txt datacardKScan_v32p0_noSyst.txt
+
+"""
 lumi={'2018':58,'2017':41.5,'2016':36.3 , '2016PreVFP':19.5,'2016PostVFP':16.8,'run2':137.61}
 lumiMap={ky : f"{lumi[ky]*1000:1f}" for ky in lumi }
 

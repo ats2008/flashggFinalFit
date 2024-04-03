@@ -7,6 +7,8 @@ combineCards.py data_bkg.txt v32p0DataCards/WithSysts/*.txt > datacard_v32p0_raw
 python3 updateDatacard.py -i datacard_v31p0_noSyst_raw.txt -r c3,ggHH_kl -o datacard_v31p0_noSyst.txt
 python3 updateDatacard.py -i datacard_v31p0_raw.txt -r c3,ggHH_kl -o datacard_v31p0.txt
 
+sed -i 's#v32p0DataCards/WithSysts/##g' datacard_v32p0.txt datacard_v32p0_noSyst.txt
+
 """
 lumi={'2018':58,'2017':41.5,'2016':36.3 , '2016PreVFP':19.5,'2016PostVFP':16.8,'run2':137.61}
 lumiMap={ky : f"{lumi[ky]*1000:1f}" for ky in lumi }
