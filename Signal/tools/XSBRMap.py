@@ -59,6 +59,12 @@ globalXSBRMap['trippleH_v2']['c3_m1_d4_0']     = {'mode':'constant','factor':  0
 globalXSBRMap['trippleH_v2']['c3_m1_d4_m1']   = {'mode':'constant','factor':  0.000507 *1e-3 }
 globalXSBRMap['trippleH_v2']['c3_m1p5_d4_m0p5'] = {'mode':'constant','factor':  0.000903 *1e-3 }
 
+globalXSBRMap['trippleH_v2']['ggHH_kl0p0'] = {'mode':'constant','factor':  0.14778 *1e-3 }
+globalXSBRMap['trippleH_v2']['ggHH_kl2p45'] = {'mode':'constant','factor': 0.02816 *1e-3 }
+globalXSBRMap['trippleH_v2']['ggHH_kl5p0'] = {'mode':'constant','factor':  0.20159 *1e-3 }
+
+globalXSBRMap['trippleH_v2']['WToQQHHTo2B2G'] = {'mode':'constant','factor':  0.00133 *1e-3 }
+globalXSBRMap['trippleH_v2']['ZToBBHHTo2B2G'] = {'mode':'constant','factor':  0.00096 *1e-3 }
 
 
 # ...

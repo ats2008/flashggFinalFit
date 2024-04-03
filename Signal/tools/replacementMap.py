@@ -40,13 +40,16 @@ globalReplacementMap["trippleH"]["procRVMap"]["doubleH"] = "doubleH"
 globalReplacementMap["trippleH"]["procRVMap"]["singleH"] = "doubleH"
 globalReplacementMap["trippleH"]["procRVMap"]["ggHHH"]   = "ggHHH"
 globalReplacementMap["trippleH"]["procRVMap"]["ggH"]   = "ggHHH"
-globalReplacementMap["trippleH"]["procRVMap"]["ttH"]   = "ttH"
-globalReplacementMap["trippleH"]["procRVMap"]["vbfH"]   = "vbfH"
+globalReplacementMap["trippleH"]["procRVMap"]["ttH"]   = "ggHHH"
+globalReplacementMap["trippleH"]["procRVMap"]["vbfH"]   = "ggHHH"
 globalReplacementMap["trippleH"]["procRVMap"]["vH"]   = "ggHHH"
 globalReplacementMap["trippleH"]["procRVMap"]["ggHH"]   = "ggHHH"
 globalReplacementMap["trippleH"]["procRVMap"]["ttHH"]   = "ggHHH"
 globalReplacementMap["trippleH"]["procRVMap"]["vbfHH"]   = "ggHHH"
 globalReplacementMap["trippleH"]["procRVMap"]["vHH"]   = "ggHHH"
+ss="c3_0_d4_99,c3_0_d4_m1,c3_19_d4_19,c3_1_d4_0,c3_1_d4_2,c3_2_d4_m1,c3_4_d4_9,c3_m1_d4_0,c3_m1_d4_m1,c3_m1p5_d4_m0p5,ggHH,ggHH_kl2p45,ggHH_kl5p0,ggHH_kl0p0,vbfHH,ttHH,wHH,zHH,WToQQHHTo2B2G,ZToBBHHTo2B2G,ggH,ttH,vHH,vbfH"
+for ky in ss.split(","):
+    globalReplacementMap["trippleH"]["procRVMap"][ky]="ggHHH"
 # Replacement category for RV fit
 globalReplacementMap["trippleH"]["catRVMap"] = od()
 globalReplacementMap["trippleH"]["catRVMap"]["CAT0"] = "CAT0"

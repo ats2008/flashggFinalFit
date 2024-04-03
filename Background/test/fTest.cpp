@@ -228,6 +228,7 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooDataSet *data, std
   double prob;
   int ntoys = 500;
   // Routine to calculate the goodness of fit. 
+  auto namePNGn=name+"_gofTest.pdf";
   name+="_gofTest.pdf";
   RooRealVar norm("norm","norm",data->sumEntries(),0,10E6);
   //norm.removeRange();
@@ -295,6 +296,8 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooDataSet *data, std
     TArrow lData(chi2*(nBinsForMass-np),toyhist.GetMaximum(),chi2*(nBinsForMass-np),0);
     lData.SetLineWidth(2);
     lData.Draw();
+    can->SaveAs(name.c_str());
+    //name.replace(name.end()-3,3,".png");
     can->SaveAs(name.c_str());
     // back to best fit 	
     params->assignValueOnly(preParams);

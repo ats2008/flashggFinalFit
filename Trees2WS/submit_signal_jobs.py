@@ -1,8 +1,9 @@
 """
 
 python3 submit_signal_jobs.py  -p
+python3 submit_signal_jobs.py  --procs ggHHH,c3_0_d4_99,c3_0_d4_m1,c3_19_d4_19,c3_1_d4_0,c3_1_d4_2,c3_2_d4_m1,c3_4_d4_9,c3_m1_d4_0,c3_m1_d4_m1,c3_m1p5_d4_m0p5 --exec -n ggHHH
 python3 submit_signal_jobs.py  --procs ggHH,ggHH_kl2p45,ggHH_kl5p0,ggHH_kl0p0,vbfHH,ttHH,wHH,zHH,WToQQHHTo2B2G,ZToBBHHTo2B2G --exec -n doubleH
-python3 submit_signal_jobs.py  --procs ggH,ttH,vHH,vbfH --exec -n singleH
+python3 submit_signal_jobs.py  --procs ggH,ttH,vH,vbfH --exec -n singleH
 
 """
 
@@ -72,8 +73,8 @@ if __name__=='__main__':
     if not args.cfg:
         args.cfg=''
     
-    tag='v31p0'
-    files=glob.glob("mar25/*.root")
+    tag='v32p0'
+    files=glob.glob("apr3/*.root")
     print(f"Got {len(files)} ! ")
     pool=None
     if args.exec:
@@ -81,6 +82,7 @@ if __name__=='__main__':
     
     proctSet={}
     for fls in files:
+        isReco=''
         iFile=fls
         wsDir='/'.join(fls.split('/')[:-1])+'/'
         wsFile=fls.split('/')[-1]
@@ -113,6 +115,9 @@ if __name__=='__main__':
             year='2016'
         else:
             print("YEAR NOT FOUND for ",fls)
+        if 'RR' in wsFile:
+            isReco=' --isRECO'
+
         ext=f"trippleH_{tag}_{proc}_{year}"
         if procs:
             if proc not in procs:
@@ -123,6 +128,7 @@ if __name__=='__main__':
         if proc not in proctSet:
             proctSet[proc]=[]
         proctSet[proc].append(year)
+        print(" fls : ",fls)
         print("wsDir  : ",wsDir)
         print("wsFile : ",wsFile)
         print("proc : ",proc)
@@ -136,7 +142,7 @@ if __name__=='__main__':
         cmd=cmd.replace("TNP",args.treeNameProc)
         yearBare=year.replace('Post','').replace('Pre','')
         cmd=cmd.replace("YEAR",yearBare)
-        cmd=cmd.replace("EXT",ext)
+        cmd=cmd.replace("EXT",ext) + isReco
         if args.exec:
             taskID+=1
             N+=1

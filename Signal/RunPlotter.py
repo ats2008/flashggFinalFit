@@ -108,13 +108,19 @@ for cat,f in inputFiles.iteritems():
   for k, norm in norms.iteritems():
     #print k
     print(k)
-    proc,_, year = k.split("_")
+    year=k.split("_")[-1]
+    proc='_'.join(k.split("_")[:-2])
+    #proc,_, year = k.split("_")
     w.var("IntLumi").setVal(lumiScaleFactor*lumiMap[year])
     catNorm += norm.getVal()
 
   # Iterate over norms and extract data sets + pdfs
   for k, norm in norms.iteritems():
-    proc,cat, year = k.split("_")
+    year=k.split("_")[-1]
+    cat=k.split("_")[-2]
+    proc='_'.join(k.split("_")[:-2])
+    #proc,cat, year = k.split("_")
+    print("proc : %s | cat : %s | year : %s "%(proc,cat,year) )
     _id = "%s_%s_%s_%s"%(proc,year,cat,sqrts__)
     w.var("IntLumi").setVal(lumiScaleFactor*lumiMap[year])
 

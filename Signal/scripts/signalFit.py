@@ -53,7 +53,7 @@ def get_options():
   parser.add_option("--scalesGlobal", dest='scalesGlobal', default='', help='Photon shape systematics: scalesGlobal')
   parser.add_option("--smears", dest='smears', default='', help='Photon shape systematics: smears')
   # Parameter values
-  parser.add_option('--replacementThreshold', dest='replacementThreshold', default=100, type='int', help="Nevent threshold to trigger replacement dataset")
+  parser.add_option('--replacementThreshold', dest='replacementThreshold', default=400, type='int', help="Nevent threshold to trigger replacement dataset")
   parser.add_option('--beamspotWidthData', dest='beamspotWidthData', default=3.4, type='float', help="Width of beamspot in data [cm]")
   parser.add_option('--beamspotWidthMC', dest='beamspotWidthMC', default=5.14, type='float', help="Width of beamspot in MC [cm]")
   parser.add_option('--MHPolyOrder', dest='MHPolyOrder', default=1, type='int', help="Order of polynomial for MH dependence")
@@ -170,21 +170,30 @@ for mp in opt.massPoints.split(","):
   inputWS.Delete()
   f.Close()
 
+replacementJson=None
+replacementCat=None
 # Check if nominal yield > threshold (or if +ve sum of weights). If not then use replacement proc x cat
+print("datasetRVForFit[MHNominal].numEntries()  = ",datasetRVForFit[MHNominal].numEntries() )
+print("opt.replacementThreshold : ",opt.replacementThreshold)
 if( datasetRVForFit[MHNominal].numEntries() < opt.replacementThreshold  )|( datasetRVForFit[MHNominal].sumEntries() < 0. ):
   nominal_numEntries = datasetRVForFit[MHNominal].numEntries()
   print  "Requires replacement ! : nEntries  : ",datasetRVForFit[MHNominal].sumEntries() , " and  ",datasetRVForFit[MHNominal].numEntries()
   print rMap['procRVMap'],rMap['catRVMap']
   procReplacementFit, catReplacementFit = rMap['procRVMap'][opt.proc], rMap['catRVMap'][opt.cat]
   for mp in opt.massPoints.split(","):
-    fname="%s/*%s*.root"%(opt.inputWSDir,procReplacementFit)
+    fname="%s/../*%s*/*%s*.root"%(opt.inputWSDir,procReplacementFit,procReplacementFit)
+    replacementJson=("%s/outdir_%s/fTest/json/nGauss_%s.json"%(swd__,opt.ext,catReplacementFit)).replace(opt.proc,procReplacementFit)
+    replacementCat=catReplacementFit
     print "Getting file : ",fname
+    print "setting replacement json : ",replacementJson
+    print "      cat replacement ",catReplacementFit
     #fname= opt.inputWSDir+'../ws_ggHHH/sig_ggHHH_UL18_13TeV_ggHHH.root'
     print "FORCED Getting file : ",fname
     WSFileName = glob.glob(fname)[0]
     f = ROOT.TFile(WSFileName,"read")
     inputWS = f.Get(inputWSName__)
-    d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
+    #d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
+    d = reduceDataset(inputWS.data("ggHHH_125_13TeV_CAT0"),aset)
     if opt.skipVertexScenarioSplit: datasetRVForFit[mp] = d
     else: datasetRVForFit[mp] = splitRVWV(d,aset,mode="RV")
     inputWS.Delete()
@@ -285,7 +294,14 @@ if not opt.skipBeamspotReweigh:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # If using nGaussian fit then extract nGaussians from fTest json file
 if not opt.useDCB:
-  with open("%s/outdir_%s/fTest/json/nGauss_%s.json"%(swd__,opt.ext,catRVFit)) as jf: ngauss = json.load(jf)
+
+  print swd__,opt.ext,catRVFit,procRVFit
+  catToTake=catRVFit
+  if not replacementJson:
+    with open("%s/outdir_%s/fTest/json/nGauss_%s.json"%(swd__,opt.ext,catRVFit)) as jf: ngauss = json.load(jf)
+  else:
+    print " Reading from replace ment json folder : ",replacementJson 
+    with open("%s"%(replacementJson)) as jf: ngauss = json.load(jf)
   nRV = int(ngauss["%s__%s"%(procRVFit,catRVFit)]['nRV'])
   if opt.skipVertexScenarioSplit: print " --> Fitting function: convolution of nGaussians (%g)"%nRV
   else: 

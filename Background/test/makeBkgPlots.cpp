@@ -741,7 +741,11 @@ int main(int argc, char* argv[]){
 	int mhLow;
 	int mhHigh;
 	int sqrts;
+	int scale_Sig=2016;
 	int year_=2016;
+	string year__="2016";
+    string sigProc="ggHHH";
+    string sigYear_="2018";
 	//int year_=2017;
 	float intLumi;
 	double mhvalue_;
@@ -772,6 +776,10 @@ int main(int argc, char* argv[]){
 		("higgsResolution", po::value<double>(&higgsResolution_)->default_value(1.),															"Starting point for scan")
 		("intLumi", po::value<float>(&intLumi)->default_value(0.),																"What intLumi in fb^{-1}")
 		("year", po::value<int>(&year_)->default_value(2016),																"Dataset year")
+		("Year", po::value<string>(&year__)->default_value("2016"),																"sig Dataset year in str")
+		("scaleSig", po::value<int>(&scale_Sig)->default_value(1.0),																"scale signal by this")
+		("sigYear", po::value<string>(&sigYear_)->default_value("2016"),																"sig proc year in str")
+		("sigProc", po::value<string>(&sigProc)->default_value("2016"),																"Dataset year in str")
 		("sqrts,S", po::value<int>(&sqrts)->default_value(8),																"Which centre of mass is this data from?")
 		("isFlashgg",  po::value<int>(&isFlashgg_)->default_value(1),  								    	        "Use Flashgg output ")
 		("flashggCats,f", po::value<string>(&flashggCatsStr_)->default_value("UntaggedTag_0,UntaggedTag_1,UntaggedTag_2,UntaggedTag_3,VBFTag_0,VBFTag_1,VBFTag_2,TTHHadronicTag,TTHLeptonicTag,VHHadronicTag,VHTightTag,VHLooseTag,VHEtTag"),       "Flashgg category names to consider")
@@ -822,10 +830,15 @@ int main(int argc, char* argv[]){
 	RooMultiPdf *mpdf = 0; 
 	RooCategory *mcat = 0;
 	if (isMultiPdf) {
-		mpdf = (RooMultiPdf*)inWS->pdf(Form("CMS_hgg_%s_%dTeV_%d_bkgshape",catname.c_str(),sqrts,year_));
-		mcat = (RooCategory*)inWS->cat(Form("pdfindex_%s_%dTeV_%d",catname.c_str(),sqrts,year_));
+        //auto inPdfName=Form("CMS_hgg_%s_%dTeV_%d_bkgshape",catname.c_str(),sqrts,year_)
+        std::cout<<"YEAR : "<<year__<<"\n";
+		auto inPdfName=Form("CMS_hgg_%s_%s_%dTeV_bkgshape",catname.c_str(),year__.data(),sqrts);
+        mpdf = (RooMultiPdf*)inWS->pdf(inPdfName);
+        //auto inPDFCatName=Form("pdfindex_%s_%dTeV_%d",catname.c_str(),sqrts,year_)
+        auto inPDFCatName=Form("pdfindex_%s_%s_%dTeV",catname.c_str(),year__.data(),sqrts);
+		mcat = (RooCategory*)inWS->cat(inPDFCatName);
 		if (!mpdf || !mcat){
-			cout << "[ERROR] "<< "Can't find multipdfs (" << Form("CMS_hgg_%s_%dTeV_%d_bkgshape",catname.c_str(),sqrts,year_) << ") or multicat ("<< Form("pdfindex_%s_%dTeV_%d",catname.c_str(),sqrts,year_) <<")" << endl;
+			cout << "[ERROR] "<< "Can't find multipdfs (" << inPdfName << ") or multicat ("<< Form("pdfindex_%s_%dTeV_%d",catname.c_str(),sqrts,year_) <<")" << endl;
 			exit(0);
 		}
 	}
@@ -873,6 +886,7 @@ int main(int argc, char* argv[]){
 	TLegend *leg = new TLegend(0.6,0.6,0.89,0.89);
 	leg->SetFillColor(0);
 	leg->SetLineColor(0);
+	leg->SetTextSize(0.03);
 
 	cout<< "[INFO] " << "Plotting data and nominal curve" << endl;
 	RooPlot *plot = mgg->frame();
@@ -1094,16 +1108,22 @@ int main(int argc, char* argv[]){
 			else {
 				RooRealVar *MH = (RooRealVar*)w_sig->var("MH");
 				if (!MH) MH = (RooRealVar*)w_sig->var("CMS_hgg_mass");
-				RooAbsPdf *sigPDF = (RooAbsPdf*)w_sig->pdf(Form("sigpdfrel%s_allProcs",catname.c_str()));
-				MH->setVal(mhvalue_);
-				sigPDF->plotOn(plot,Normalization(1.0,RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3));
-				sigPDF->plotOn(plot,Normalization(1.0,RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3),FillColor(38),FillStyle(3001),DrawOption("F"));
-				std::cout << "[INFO] expected number of events in signal PDF " << sigPDF->expectedEvents(*MH) << std::endl;	
-				//sigPDF->plotOn(plot,Normalization(0.001*lumi->getVal()/*get intlumi (/fb) from ws, and divide by 100 for /pb */,RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3));
-				//sigPDF->plotOn(plot,Normalization(0.001*lumi->getVal(),RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3),FillColor(38),FillStyle(3001),DrawOption("F"));
-				sigPDF->plotOn(plotLC,Normalization(1.0,RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3));
+				//auto signame=Form("sigpdfrel%s_allProcs",catname.c_str())
+                    //       extendhggpdfsmrel_ggHHH_2018_CAT0_13TeVThisLumi
+				auto signame=Form("extendhggpdfsmrel_%s_%s_%s_13TeVThisLumi",sigProc.data(),sigYear_.data(),catname.c_str());
+                RooAbsPdf *sigPDF = (RooAbsPdf*)w_sig->pdf(signame);
+				
+                MH->setVal(mhvalue_);
+				//sigPDF->plotOn(plot,Normalization(1.0,RooAbsReal::Raw),LineColor(kBlue),LineWidth(3));
+				//sigPDF->plotOn(plot,Normalization(1.0,RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3),FillColor(38),FillStyle(3001),DrawOption("F"));
+				std::cout << "[INFO] expected number of events in signal PDF " << sigPDF->expectedEvents(*MH)<<"*"<<lumi->getVal()<< std::endl;	
+				//sigPDF->plotOn(plot,Normalization(58*lumi->getVal()/*get intlumi (/fb) from ws, and divide by 100 for /pb */,RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3));
+				sigPDF->plotOn(plot,Normalization(0.001*scale_Sig/*get intlumi (/fb) from ws, and divide by 100 for /pb */,RooAbsReal::Raw),LineColor(kBlue),LineWidth(3));
+				//sigPDF->plotOn(plot,Normalization(0.001*lumi->getVal()*1e4,RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3),FillColor(38),FillStyle(3001),DrawOption("F"));
+				//sigPDF->plotOn(plotLC,Normalization(2000.0,RooAbsReal::RelativeExpected),LineColor(kBlue),LineWidth(3));
+				//sigPDF->plotOn(plotLC,Normalization(2000.0,RooAbsReal::Raw),LineColor(kBlue),LineWidth(3));
 				TObject *sigLeg = (TObject*)plot->getObject(plot->numItems()-1);
-				leg->AddEntry(sigLeg,Form("Sig model m_{H}=%.1fGeV",MH->getVal()),"L");
+				leg->AddEntry(sigLeg,Form("Sig model m_{H}=%.1fGeV [ x %d]",MH->getVal(),scale_Sig),"L");
 				outWS->import(*sigPDF);
 			}
 		}

@@ -10,7 +10,10 @@ def getProcName(proc):
     if 'ggHHH' in proc:
         return 'c3_0_d4_0'
     if ('c3' in proc) and ('d4' in proc):
-       return '_'.join(proc.split('_')[:4])   
+        return '_'.join(proc.split('_')[:4])   
+    if 'ggHH_kl' in proc:
+        p='_'.join(proc.split("_")[:2])
+        return p
     return proc.split('_')[0]
 
 def isSignalProc(proc):
@@ -462,6 +465,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i',"--inputFile", help="Input File",default=None)
     parser.add_argument("-o","--ofile", help="output filename ", default='ofile_updated.txt' )
+    parser.add_argument("-r","--procToRemove", help="remove processes ", default=None )
     parser.add_argument("--print", help="Print the datasets",default=False,action='store_true')
     parser.add_argument("--noPeaking", help="Remove the peaking processes",default=False,action='store_true')
     parser.add_argument("-p","--onlyPrint", help="Only print the datacard",default=False,action='store_true')    
@@ -514,43 +518,21 @@ def main():
                                                                      observationData_updated
                                                                     )
 
-    #rmlist=["c3_2_d4_m1_2018_ch5","c3_1_d4_2_2018_ch5" ]
-    #for proc in rmlist:
-    #    removeColumn(dataS_updated , shapeData_updated , proc, True )
-    #for cat in ['CAT0','CAT1','CAT2'] :                                                                    
-    #    scanlist=[
-    #                "c3_m1p5_d4_m0p5_2018_ch5",
-	#		        "c3_1_d4_0_2018_ch5",
-	#		        "c3_m1_d4_m1_2018_ch5",
-	#		        "c3_19_d4_19_2018_ch5",
-    #                "c3_4_d4_9_2018_ch5",
-	#		        "c3_0_d4_99_2018_ch5",
-	#		        "c3_2_d4_m1_2018_ch5",
-    #                "c3_m1_d4_0_2018_ch5"
-    #        ]
-    #    for proc in scanlist:
-    #        duplicateColumn(dataS_updated,shapeData_updated,cat,proc ,cat, proc.replace('2018','2017'), lumi=lumiMap['2017'],isSig=True)
-    #        duplicateColumn(dataS_updated,shapeData_updated,cat,proc ,cat, proc.replace('2018','2016'), lumi=lumiMap['2016'],isSig=True)
-    #        
-    #    #duplicateColumn(dataS_updated,shapeData_updated,cat,'ggHHH_2018_ch4',cat,'ggHHH_2016_ch4',lumi=lumiMap['2016'],isSig=True)
-    #    #duplicateColumn(dataS_updated,shapeData_updated,cat,'ggHHH_2018_ch4',cat,'ggHHH_2017_ch4',lumi=lumiMap['2017'],isSig=True)
-    #    duplicateColumn(dataS_updated,shapeData_updated,cat,'ttHH_2017_ch3' ,cat,'ttHH_2018_ch3',lumi=lumiMap['2018'],isSig=False)
-    #    duplicateColumn(dataS_updated,shapeData_updated,cat,'ttHH_2017_ch3' ,cat,'ttHH_2016_ch3',lumi=lumiMap['2016'],isSig=False)
-    #    duplicateColumn(dataS_updated,shapeData_updated,cat,'vHH_2017_ch3'  ,cat,'vHH_2018_ch3',lumi=lumiMap['2018'],isSig=False)
-    #    duplicateColumn(dataS_updated,shapeData_updated,cat,'vHH_2017_ch3'  ,cat,'vHH_2016_ch3',lumi=lumiMap['2016'],isSig=False)
-
     rmlist=[
             "c3_0_d4_m1_2016Pre","c3_0_d4_m1_2016Post","c3_0_d4_m1_2018" ,
-            "c3_2_d4_m1_2016Pre","c3_2_d4_m1_2016Post","c3_2_d4_m1_2018","c3_2_d4_m1_2017"
-           ]
+            "c3_m1_d4_0_2016Pre","c3_m1_d4_0_2016Post","c3_m1_d4_0_2018","c3_m1_d4_0_2017"
+    #        "c3_2_d4_m1_2016Pre","c3_2_d4_m1_2016Post","c3_2_d4_m1_2018","c3_2_d4_m1_2017"
+          ]
     for proc in rmlist:
         removeColumn(dataS_updated , shapeData_updated , proc, True )
     for cat in ['CAT0','CAT1','CAT2'] :                                                                    
-        #duplicateColumn(dataS_updated,shapeData_updated,cat,'ggHHH_2018_ch4',cat,'ggHHH_2016_ch4',lumi=lumiMap['2016'],isSig=True)
-        duplicateColumn(dataS_updated,shapeData_updated,cat,'ttHH_2017' ,cat,'ttHH_2018',lumi=lumiMap['2018'],isSig=False)
-        duplicateColumn(dataS_updated,shapeData_updated,cat,'ttHH_2017' ,cat,'ttHH_2016',lumi=lumiMap['2016'],isSig=False)
-        duplicateColumn(dataS_updated,shapeData_updated,cat,'vHH_2017'  ,cat,'vHH_2018',lumi=lumiMap['2018'],isSig=False)
-        duplicateColumn(dataS_updated,shapeData_updated,cat,'vHH_2017'  ,cat,'vHH_2016',lumi=lumiMap['2016'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'ggHH_2016Pre' ,cat,'ggHH_2016Post',lumi=lumiMap['2016PostVFP'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'WToQQHHTo2B2G_2017'  ,cat,'WToQQHHTo2B2G_2018',lumi=lumiMap['2018'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'WToQQHHTo2B2G_2017'  ,cat,'WToQQHHTo2B2G_2016Pre',lumi=lumiMap['2016PreVFP'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'WToQQHHTo2B2G_2017'  ,cat,'WToQQHHTo2B2G_2017Post',lumi=lumiMap['2016PostVFP'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'ZToBBHHTo2B2G_2017'  ,cat,'ZToBBHHTo2B2G_2018',lumi=lumiMap['2018'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'ZToBBHHTo2B2G_2017'  ,cat,'ZToBBHHTo2B2G_2016Pre',lumi=lumiMap['2016PreVFP'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'ZToBBHHTo2B2G_2017'  ,cat,'ZToBBHHTo2B2G_2017Post',lumi=lumiMap['2016PostVFP'],isSig=False)
 
     if args.print:
         print("================> Shape info , prior to update ")
@@ -575,7 +557,13 @@ def main():
         printDset(dataS_updated)
         print()
         print()
-    
+    if args.procToRemove is not None:
+        for prc_ in args.procToRemove.split(","):
+            print("Looking for ",prc_," to remove")
+            for proc in list(shapeData_updated.keys()):
+                if prc_ in proc:
+                    removeColumn(dataS_updated , shapeData_updated , proc  )
+        
     if args.noPeaking:
         print("Removing Peaking backgrounds !")
         for proc in list(shapeData_updated.keys()):

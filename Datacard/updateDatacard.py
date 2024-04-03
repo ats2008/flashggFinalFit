@@ -1,5 +1,13 @@
 import json,sys,os,argparse
+usage="""
 
+combineCards.py data_bkg.txt v32p0DataCards/NoSysts/*.txt > datacard_v32p0_noSyst_raw.txt 
+combineCards.py data_bkg.txt v32p0DataCards/WithSysts/*.txt > datacard_v32p0_raw.txt 
+
+python3 updateDatacard.py -i datacard_v31p0_noSyst_raw.txt -r c3,ggHH_kl -o datacard_v31p0_noSyst.txt
+python3 updateDatacard.py -i datacard_v31p0_raw.txt -r c3,ggHH_kl -o datacard_v31p0.txt
+
+"""
 lumi={'2018':58,'2017':41.5,'2016':36.3 , '2016PreVFP':19.5,'2016PostVFP':16.8,'run2':137.61}
 lumiMap={ky : f"{lumi[ky]*1000:1f}" for ky in lumi }
 
@@ -12,7 +20,10 @@ def getProcName(proc):
         if 'ggHHH' in proc:
             return 'c3_0_d4_0'
     if ('c3' in proc) and ('d4' in proc):
-       return '_'.join(proc.split('_')[:4])   
+        return '_'.join(proc.split('_')[:4])   
+    if 'ggHH_kl' in proc:
+        p='_'.join(proc.split("_")[:2])
+        return p
     return proc.split('_')[0]
 
 def getAllProcs(dataS):
@@ -440,6 +451,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i',"--inputFile", help="Input File",default=None)
     parser.add_argument("-o","--ofile", help="output filename ", default='ofile_updated.txt' )
+    parser.add_argument("-r","--procToRemove", help="remove processes ", default=None )
     parser.add_argument("--print", help="Print the datasets",default=False,action='store_true')
     parser.add_argument("--noPeaking", help="Remove the peaking processes",default=False,action='store_true')
     parser.add_argument("-p","--onlyPrint", help="Only print the datacard",default=False,action='store_true')    
@@ -497,12 +509,13 @@ def main():
                                                                     )
 
     for cat in ['CAT0','CAT1','CAT2'] :                                                                    
-        #duplicateColumn(dataS_updated,shapeData_updated,cat,'ggHHH_2018_ch4',cat,'ggHHH_2016_ch4',lumi=lumiMap['2016'],isSig=True)
-        #duplicateColumn(dataS_updated,shapeData_updated,cat,'ggHHH_2018_ch4',cat,'ggHHH_2017_ch4',lumi=lumiMap['2017'],isSig=True)
-        duplicateColumn(dataS_updated,shapeData_updated,cat,'ttHH_2017' ,cat,'ttHH_2018',lumi=lumiMap['2018'],isSig=False)
-        duplicateColumn(dataS_updated,shapeData_updated,cat,'ttHH_2017' ,cat,'ttHH_2016',lumi=lumiMap['2016'],isSig=False)
-        duplicateColumn(dataS_updated,shapeData_updated,cat,'vHH_2017'  ,cat,'vHH_2018',lumi=lumiMap['2018'],isSig=False)
-        duplicateColumn(dataS_updated,shapeData_updated,cat,'vHH_2017'  ,cat,'vHH_2016',lumi=lumiMap['2016'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'ggHH_2016Pre' ,cat,'ggHH_2016Post',lumi=lumiMap['2016PostVFP'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'WToQQHHTo2B2G_2017'  ,cat,'WToQQHHTo2B2G_2018',lumi=lumiMap['2018'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'WToQQHHTo2B2G_2017'  ,cat,'WToQQHHTo2B2G_2016Pre',lumi=lumiMap['2016PreVFP'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'WToQQHHTo2B2G_2017'  ,cat,'WToQQHHTo2B2G_2017Post',lumi=lumiMap['2016PostVFP'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'ZToBBHHTo2B2G_2017'  ,cat,'ZToBBHHTo2B2G_2018',lumi=lumiMap['2018'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'ZToBBHHTo2B2G_2017'  ,cat,'ZToBBHHTo2B2G_2016Pre',lumi=lumiMap['2016PreVFP'],isSig=False)
+        duplicateColumn(dataS_updated,shapeData_updated,cat,'ZToBBHHTo2B2G_2017'  ,cat,'ZToBBHHTo2B2G_2017Post',lumi=lumiMap['2016PostVFP'],isSig=False)
 
     if args.print:
         print("================> Shape info , prior to update ")
@@ -527,7 +540,13 @@ def main():
         printDset(dataS_updated)
         print()
         print()
-    
+    if args.procToRemove is not None:
+        for prc_ in args.procToRemove.split(","):
+            print("Looking for ",prc_," to remove")
+            for proc in list(shapeData_updated.keys()):
+                if prc_ in proc:
+                    removeColumn(dataS_updated , shapeData_updated , proc  )
+        
     if args.noPeaking:
         print("Removing Peaking backgrounds !")
         for proc in list(shapeData_updated.keys()):
@@ -596,7 +615,6 @@ def main():
             if l.startswith('pdfindex'):
                 continue
             outPutTxt.append(l)
-    
  
     with open(args.ofile,'w') as f :
         for l in outPutTxt:

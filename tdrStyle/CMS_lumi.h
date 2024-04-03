@@ -21,7 +21,7 @@ float extraTextFont = 52;  // default is helvetica-italics
 float lumiTextSize     = 0.65;
 float lumiTextOffset   = 0.2;
 float cmsTextSize      = 0.8;
-float cmsTextOffset    = 0.1;  // only used in outOfFrame version
+float cmsTextOffset    = 0.08;  // only used in outOfFrame version
 
 float relPosX    = 0.045;
 float relPosY    = 0.035;
